@@ -1,4 +1,4 @@
-const schema = require('./model/schema');
+import schemaValidation from './model/schema.js';
 //Middleware Object to contain all the middleware functions.
 const middleware = {
     validateToken: function(req, res, next){
@@ -10,7 +10,7 @@ const middleware = {
         }
     },
     validateBody : function(req, res, next) {
-        let validation = schema.schemaValidation(req.body)
+        let validation = schemaValidation(req.body)
         if (typeof validation.error !== 'undefined') {
             req.validatedBody = false;
         } else {
@@ -31,4 +31,4 @@ const middleware = {
     }
 }
 
-module.exports = middleware;
+export default middleware;

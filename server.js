@@ -1,6 +1,6 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const middleware = require('./middleware');
+import express from 'express';
+import bodyParser from 'body-parser';
+import middleware from './middleware.js';
 
 const app = express();
 const jsonParser = bodyParser.json();

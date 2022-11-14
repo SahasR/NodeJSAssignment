@@ -1,21 +1,20 @@
-const joi = require('joi');
+import joi from 'joi';
 
-const schema = {
-    object: joi.object({
-        name: joi.string()
-            .alphanum()
-            .min(1)
-            .max(20)
-            .required(),
-    
-        desc: joi.string()
-            .min(1)
-            .max(100)
-            .required()
-    }),
-    schemaValidation : function(body){
-        return this.object.validate(body)
-    }
-}
+const object = joi.object({
+    name: joi.string()
+        .alphanum()
+        .min(1)
+        .max(20)
+        .required(),
 
-module.exports = schema;
+    desc: joi.string()
+        .min(1)
+        .max(100)
+        .required()
+})
+
+const schemaValidation = ((body) => {
+    return object.validate(body)
+});
+
+export default schemaValidation;
