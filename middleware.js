@@ -1,4 +1,6 @@
 import schemaValidation from './model/schema.js';
+import tasksList from './data/tasklist.js';
+
 //Middleware Object to contain all the middleware functions.
 const middleware = {
     validateToken: function(req, res, next){
