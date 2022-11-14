@@ -1,59 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const joi = require('joi');
+const middleware = require('./middleware');
 
 const app = express();
 const jsonParser = bodyParser.json();
-const schema = joi.object({
-    name: joi.string()
-        .alphanum()
-        .min(1)
-        .max(20)
-        .required(),
-
-    desc: joi.string()
-        .min(1)
-        .max(100)
-        .required()
-})
 
 var tasksList = [];
 
 app.listen(3000, function() {
     console.log('Listening on http://localhost:3000/')
 })
-
-//Middleware Object to contain all the middleware functions.
-const middleware = {
-    validateToken: function(req, res, next){
-        if (req.headers.token === 'secretpass'){
-            next();
-        } else {
-            res.statusCode = 403;
-            res.send("Access Forbidden!");
-        }
-    },
-    validateBody : function(req, res, next) {
-        let validation = schema.validate(req.body)
-        if (typeof validation.error !== 'undefined') {
-            req.validatedBody = false;
-        } else {
-            req.validatedBody = true;
-        }
-        next();
-    },
-    validateID : function(req, res, next) {
-        let id = parseInt(req.params.id, 10);
-        if (typeof id === 'number'){
-            if (id >= 0 && id < tasksList.length){
-                req.validatedID = true;
-            } else {
-                req.validatedID = false;
-            }
-        }
-        next();
-    }
-}
 
 //Another piece of middleware we want to run to get the bodys to parse.
 app.use(jsonParser);
