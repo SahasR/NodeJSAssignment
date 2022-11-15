@@ -1,8 +1,8 @@
-import tasksList from "../data/tasklist.js";
+import taskList from "../data/tasklist.js";
 
 // GET /tasks to fetch all the tasks
 const returnList = ((req, res) => {
-    return res.json(tasksList);
+    return res.json(taskList.tasksList);
 })
 
 // GET / returns the index page with a simple message
@@ -15,8 +15,10 @@ const addTask = ((req, res) => {
     let validation = req.validatedBody;
     if (validation === true){
         res.statusCode = 200;
-        res.send("Added!");
-        tasksList.push(req.body);
+        taskList.count++;
+        let addObj = Object.assign({id : taskList.count}, req.body)
+        taskList.tasksList.push(addObj);
+        res.send(addObj);
     } else {
         res.statusCode = 405;
         res.send("Illegal Object!");
@@ -29,9 +31,9 @@ const getTask = ((req, res) => {
     let validation = req.validatedID;
     if (validation === true){
         res.statusCode = 200;
-        res.send(tasksList[req.params.id])
+        res.send(taskList.tasksList[req.params.id])
     } else {
-        res.statusCode = 405;
+        res.statusCode = 404;
         res.send("Illegal Value");
     }
 })
@@ -41,7 +43,7 @@ const deleteTask = ((req, res) => {
     let validation = req.validatedID;
     if (validation === true){
         let id = req.params.id;
-        tasksList.splice(id, 1);
+        taskList.tasksList.splice(id, 1);
         res.statusCode = 200;
         res.send("Deleted!");
     } else {
@@ -55,7 +57,7 @@ const updateTask = ((req, res) => {
     let validationID = req.validatedID;
     let validationBody = req.validatedBody;
     if (validationBody === true && validationID === true){
-        tasksList[req.params.id] = req.body;
+        taskList.tasksList[req.params.id] = req.body;
         res.statusCode = 200;
         res.send("Updated Successfully!");
     } else {
