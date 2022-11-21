@@ -8,7 +8,7 @@ const middleware = {
             next();
         } else {
             res.statusCode = 403;
-            res.send("Access Forbidden!");
+            res.json("Access Forbidden!");
         }
     },
     validateBody : function(req, res, next) {
@@ -23,11 +23,9 @@ const middleware = {
     validateID : function(req, res, next) {
         let id = parseInt(req.params.id, 10);
         if (typeof id === 'number'){
-            if (id >= 0 && id < tasksList.length){
-                req.validatedID = true;
-            } else {
-                req.validatedID = false;
-            }
+            req.validatedID = true;
+        } else {
+            req.validatedID = false;
         }
         next();
     }

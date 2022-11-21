@@ -7,7 +7,7 @@ const returnList = ((req, res) => {
 
 // GET / returns the index page with a simple message
 const returnIndex = ((req, res) => {
-    res.send("Hello use the proper urls to perform functions on the server!");
+    res.json("Hello use the proper urls to perform functions on the server!");
 })
 
 // POST /task to post a new task
@@ -18,10 +18,10 @@ const addTask = ((req, res) => {
         taskList.count++;
         let addObj = Object.assign({id : taskList.count}, req.body)
         taskList.tasksList.push(addObj);
-        res.send(addObj);
+        res.json(addObj);
     } else {
         res.statusCode = 405;
-        res.send("Illegal Object!");
+        res.json("Illegal Object!");
     }
 })
 
@@ -29,12 +29,22 @@ const addTask = ((req, res) => {
 // GET /task/id to fetch a particular task
 const getTask = ((req, res) => {
     let validation = req.validatedID;
+    let found = false;
     if (validation === true){
-        res.statusCode = 200;
-        res.send(taskList.tasksList[req.params.id])
+       taskList.tasksList.map((task) => {
+            if (task.id === parseInt(req.params.id, 10)){
+                found = true;
+                res.statusCode = 200;
+                res.json(task);
+            }
+       })
+       if (found === false){
+        res.statusCode = 404;
+        res.json("Task not found!");
+       }
     } else {
         res.statusCode = 404;
-        res.send("Illegal Value");
+        res.json("Illegal Value");
     }
 })
 
@@ -42,13 +52,26 @@ const getTask = ((req, res) => {
 const deleteTask = ((req, res) => {
     let validation = req.validatedID;
     if (validation === true){
-        let id = req.params.id;
-        taskList.tasksList.splice(id, 1);
+        let found = false;
+        let foundind;
+        taskList.tasksList.map((task, i) => {
+            if (task.id === parseInt(req.params.id, 10)){
+                found = true;
+                foundind = i;
+            }
+       })
+
+       if (found === false){
+        res.statusCode = 404;
+        res.json("Task not found!");
+       } else {
+        taskList.tasksList.splice(foundind, 1);
         res.statusCode = 200;
-        res.send("Deleted!");
+        res.json("Deleted!");
+       }
     } else {
         res.statusCode = 404;
-        res.send("Not found index?");
+        res.json("Not found index?");
     }
 })
 
@@ -57,12 +80,27 @@ const updateTask = ((req, res) => {
     let validationID = req.validatedID;
     let validationBody = req.validatedBody;
     if (validationBody === true && validationID === true){
-        taskList.tasksList[req.params.id] = req.body;
+        let found = false;
+        let foundind;
+        taskList.tasksList.map((task, i) => {
+            if (task.id === parseInt(req.params.id, 10)){
+                found = true;
+                foundind = i;
+            }
+       })
+
+       if (found === false){
+        res.statusCode = 404;
+        res.json("Task not found!");
+       } else {
+        taskList.tasksList[foundind] = Object.assign({id : parseInt(req.params.id, 10)}, req.body);
         res.statusCode = 200;
-        res.send("Updated Successfully!");
+        res.json("Updated Successfully!");
+       }
+
     } else {
         res.statusCode = 405;
-        res.send("Problem with either index or object");
+        res.json("Problem with either index or object");
     }
 })
 
